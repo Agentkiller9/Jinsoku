@@ -1,0 +1,48 @@
+version: '3.8'
+
+# This file defines our two services: frontend and backend.
+# It tells Docker how to build and run them, what ports to
+# expose, and what volumes to mount.
+
+services:
+  # --- The React Frontend ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mounts our local code for hot-reloading
+      - ./frontend:/app
+      # Prevents our local node_modules from overwriting the container's
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - dfir_net
+
+  # --- The Python/FastAPI Backend ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mounts our local code for hot-reloading
+      - ./backend:/app
+      # Mount the tools (read-only) so the backend can execute them
+      - ./tools:/tools:ro
+      # Mount the data (read-write) so the backend can read logs
+      # and write results.
+      - ./data:/data
+    environment:
+      # Ensures Python logs print immediately
+      - PYTHONUNBUFFERED=1
+    networks:
+      - dfir_net
+
+networks:
+  dfir_net:
+    driver: bridge

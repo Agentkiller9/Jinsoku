@@ -1,0 +1,19 @@
+# Ignore Node.js dependencies (Frontend)
+node_modules/
+frontend/node_modules/
+npm-debug.log
+
+# Ignore Python compiled files (Backend)
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Ignore large Data/Results
+data/results/
+*.evtx
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
